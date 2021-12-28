@@ -54,7 +54,7 @@ Flags:
       --ipv4 strings              IPV4 address to return
       --ipv6 strings              IPV6 address to return
   -n, --net string                fakeDNS network protocol (default "udp")
-      --rebind-threshold uint32   rebind threshold (default 1)
+      --rebind-threshold int      rebind threshold (default 1)
       --rebind-v4 string          IPV4 rebind address
       --rebind-v6 string          IPV6 rebind address
       --ttl uint32                time to live (default 60)

@@ -7,16 +7,16 @@ import (
 type Rebind struct {
 	rebindV4  string
 	rebindV6  string
-	threshold uint32
-	counter   map[string]uint32
+	threshold int
+	counter   map[string]int
 }
 
-func NewRebind(rebindV4, rebindV6 string, threshold uint32) *Rebind {
+func NewRebind(rebindV4, rebindV6 string, threshold int) *Rebind {
 	return &Rebind{
 		rebindV4:  rebindV4,
 		rebindV6:  rebindV6,
 		threshold: threshold,
-		counter:   make(map[string]uint32),
+		counter:   make(map[string]int),
 	}
 }
 
