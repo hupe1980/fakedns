@@ -55,7 +55,6 @@ func (t *fakeDNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 					})
 				}
 			}
-
 		}
 	} else if t.fallbackDNS != "" {
 		if exMsg, err := dns.Exchange(r, t.fallbackDNS); err == nil {
