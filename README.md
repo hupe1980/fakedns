@@ -45,7 +45,7 @@ Examples:
 - IPV4: fakedns example.org --ipv4 127.0.0.1
 - Wildcards: fakedns example.* --ipv4 127.0.0.1
 - RoundRobin: fakedns example.org --ipv4 127.0.0.1,10.10.10.10
-- Rebind: fakedns example.org --ipv4 127.0.0.1 --rebind-v4 10.10.10
+- Rebind: fakedns example.org --ipv4 127.0.0.1 --rebind-v4 10.10.10.10
 - Upstream: fakedns example.org --ipv4 127.0.0.1 --upstream 8.8.8.8
 
 Flags:
