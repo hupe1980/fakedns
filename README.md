@@ -42,24 +42,25 @@ Usage:
   fakedns [domains] [flags]
 
 Examples:
-IPV4: fakedns example.org --ipv4 127.0.0.1
-Wildcards: fakedns example.* --ipv4 127.0.0.1
-RoundRobin: fakedns example.org --ipv4 127.0.0.1,10.10.10.10
-Rebind: fakedns example.org --ipv4 127.0.0.1 --rebind-v4 10.10.10
-Upstream: fakedns example.org --ipv4 127.0.0.1 --upstream 8.8.8.8
+- IPV4: fakedns example.org --ipv4 127.0.0.1
+- Wildcards: fakedns example.* --ipv4 127.0.0.1
+- RoundRobin: fakedns example.org --ipv4 127.0.0.1,10.10.10.10
+- Rebind: fakedns example.org --ipv4 127.0.0.1 --rebind-v4 10.10.10
+- Upstream: fakedns example.org --ipv4 127.0.0.1 --upstream 8.8.8.8
 
 Flags:
-  -a, --addr string               fakeDNS address (default "0.0.0.0:53")
-  -h, --help                      help for fakedns
-      --ipv4 strings              IPV4 address to return
-      --ipv6 strings              IPV6 address to return
-  -n, --net string                fakeDNS network protocol (default "udp")
-      --rebind-threshold int      rebind threshold (default 1)
-      --rebind-v4 string          IPV4 rebind address
-      --rebind-v6 string          IPV6 rebind address
-      --ttl uint32                time to live (default 60)
-      --upstream string           upstream dns server
-  -v, --version                   version for fakedns
+  -a, --addr string            fakeDNS address (default "0.0.0.0:53")
+  -h, --help                   help for fakedns
+      --ipv4 strings           IPV4 address to return
+      --ipv6 strings           IPV6 address to return
+  -n, --net string             fakeDNS network protocol (default "udp")
+      --rebind-threshold int   rebind threshold (default 1)
+      --rebind-v4 string       IPV4 rebind address
+      --rebind-v6 string       IPV6 rebind address
+      --text strings           TXT text value
+      --ttl uint32             time to live (default 60)
+      --upstream string        upstream dns server
+  -v, --version                version for fakedns
 ```
 
 ## License
