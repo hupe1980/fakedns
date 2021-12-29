@@ -21,7 +21,9 @@ func (t *fakeDNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	domain := r.Question[0].Name
 	domainlookup := strings.TrimSuffix(domain, ".")
 
-	t.rebind.Inc(domainlookup)
+	if t.rebind != nil {
+		t.rebind.Inc(domainlookup)
+	}
 
 	msg := &dns.Msg{}
 	msg.SetReply(r)
@@ -56,7 +58,7 @@ func (t *fakeDNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 }
 
 func (t *fakeDNSHandler) ipV4(domain string) net.IP {
-	if t.rebind.IsV4Activ(domain) {
+	if t.rebind != nil && t.rebind.IsV4Activ(domain) {
 		return t.rebind.IPV4()
 	}
 
@@ -64,7 +66,7 @@ func (t *fakeDNSHandler) ipV4(domain string) net.IP {
 }
 
 func (t *fakeDNSHandler) ipV6(domain string) net.IP {
-	if t.rebind.IsV6Activ(domain) {
+	if t.rebind != nil && t.rebind.IsV6Activ(domain) {
 		return t.rebind.IPV6()
 	}
 
