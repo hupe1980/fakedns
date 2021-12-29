@@ -24,6 +24,7 @@ func main() {
 		ipsV6           []string
 		rebindV6        string
 		rebindThreshold int
+		text            []string
 	}
 
 	rootCmd := &cobra.Command{
@@ -43,6 +44,7 @@ Upstream: fakedns example.org --ipv4 127.0.0.1 --upstream 8.8.8.8`,
 				IPsV4:   opts.ipsV4,
 				IPsV6:   opts.ipsV6,
 				Rebind:  fakedns.NewRebind(opts.rebindV4, opts.rebindV6, opts.rebindThreshold),
+				Text:    opts.text,
 			}
 
 			if opts.upstream != "" {
@@ -67,6 +69,7 @@ Upstream: fakedns example.org --ipv4 127.0.0.1 --upstream 8.8.8.8`,
 	rootCmd.Flags().StringVarP(&opts.rebindV4, "rebind-v4", "", "", "IPV4 rebind address")
 	rootCmd.Flags().StringVarP(&opts.rebindV6, "rebind-v6", "", "", "IPV6 rebind address")
 	rootCmd.Flags().IntVarP(&opts.rebindThreshold, "rebind-threshold", "", 1, "rebind threshold")
+	rootCmd.Flags().StringSliceVarP(&opts.text, "text", "", nil, "TXT text value")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)

@@ -15,6 +15,7 @@ type fakeDNSHandler struct {
 	re          *regexp.Regexp
 	ipV4Pool    RoundRobin
 	ipV6Pool    RoundRobin
+	text        []string
 }
 
 func (t *fakeDNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
@@ -46,7 +47,15 @@ func (t *fakeDNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 						AAAA: t.ipV6(domainlookup),
 					})
 				}
+			case dns.TypeTXT:
+				if len(t.text) > 0 {
+					msg.Answer = append(msg.Answer, &dns.TXT{
+						Hdr: dns.RR_Header{Name: domain, Rrtype: dns.TypeTXT, Class: dns.ClassINET, Ttl: t.ttl},
+						Txt: t.text,
+					})
+				}
 			}
+
 		}
 	} else if t.fallbackDNS != "" {
 		if exMsg, err := dns.Exchange(r, t.fallbackDNS); err == nil {
@@ -80,6 +89,7 @@ type Options struct {
 	IPsV4               []string
 	IPsV6               []string
 	Rebind              *Rebind
+	Text                []string
 }
 
 type FakeDNS struct {
@@ -124,6 +134,7 @@ func New(options *Options) (*FakeDNS, error) {
 			re:          re,
 			ipV4Pool:    NewRoundRobin(options.IPsV4...),
 			ipV6Pool:    NewRoundRobin(options.IPsV6...),
+			text:        options.Text,
 		},
 	}
 
