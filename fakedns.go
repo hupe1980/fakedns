@@ -83,6 +83,7 @@ func (t *FakeDNS) ListenAndServeTLS(addr, certFile, keyFile string) error {
 
 	config := &tls.Config{
 		Certificates: []tls.Certificate{cert},
+		MinVersion:   tls.VersionTLS12,
 	}
 
 	t.server.TLSConfig = config
