@@ -60,7 +60,8 @@ Flags:
       --text strings           TXT text value
       --ttl uint32             time to live (default 60)
       --upstream string        upstream dns server
-  -v, --version                version for fakedns
+  -v, --verbose                print detailed logging messages
+      --version                version for fakedns
 ```
 
 ## License

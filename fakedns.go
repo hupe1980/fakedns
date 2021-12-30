@@ -2,6 +2,7 @@ package fakedns
 
 import (
 	"crypto/tls"
+	"log"
 	"net"
 	"regexp"
 	"strings"
@@ -17,11 +18,13 @@ type Options struct {
 	IPsV6               []string
 	Rebind              *Rebind
 	Text                []string
+	Logger              Logger
 }
 
 type FakeDNS struct {
 	options *Options
 	server  *dns.Server
+	logger  Logger
 }
 
 func New(options *Options) (*FakeDNS, error) {
@@ -36,6 +39,10 @@ func New(options *Options) (*FakeDNS, error) {
 		}
 	}
 
+	if options.Logger == nil {
+		options.Logger = NewDefaultLogger(INFO, log.Default())
+	}
+
 	server := &dns.Server{
 		Handler: &handler{
 			rebind:      options.Rebind,
@@ -45,12 +52,14 @@ func New(options *Options) (*FakeDNS, error) {
 			ipV4Pool:    NewRoundRobin(options.IPsV4...),
 			ipV6Pool:    NewRoundRobin(options.IPsV6...),
 			text:        options.Text,
+			logger:      options.Logger,
 		},
 	}
 
 	fakeDNS := &FakeDNS{
 		options: options,
 		server:  server,
+		logger:  options.Logger,
 	}
 
 	return fakeDNS, nil
@@ -65,6 +74,8 @@ func (t *FakeDNS) ListenAndServe(addr, network string) error {
 
 	t.server.Addr = addr
 	t.server.Net = network
+
+	t.logger.Printf(INFO, "[*] Starting server on %s", addr)
 
 	return t.server.ListenAndServe()
 }
@@ -89,6 +100,8 @@ func (t *FakeDNS) ListenAndServeTLS(addr, certFile, keyFile string) error {
 	t.server.TLSConfig = config
 	t.server.Addr = addr
 	t.server.Net = "tcp-tls"
+
+	t.logger.Printf(INFO, "Starting server on %s", addr)
 
 	return t.server.ListenAndServe()
 }

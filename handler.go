@@ -16,22 +16,25 @@ type handler struct {
 	ipV4Pool    RoundRobin
 	ipV6Pool    RoundRobin
 	text        []string
+	logger      Logger
 }
 
 func (h *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
-	domain := r.Question[0].Name
-	domainlookup := strings.TrimSuffix(domain, ".")
-
-	if h.rebind != nil {
-		h.rebind.Inc(domainlookup)
-	}
-
 	msg := &dns.Msg{}
 	msg.SetReply(r)
 	msg.Authoritative = true
 
-	if h.re.MatchString(domainlookup) {
-		for _, q := range r.Question {
+	for _, q := range r.Question {
+		h.logger.Printf(INFO, "[*] Receiving question: %s", q.String())
+
+		domain := r.Question[0].Name
+		domainlookup := strings.TrimSuffix(domain, ".")
+
+		if h.rebind != nil {
+			h.rebind.Inc(domainlookup)
+		}
+
+		if h.re.MatchString(domainlookup) {
 			switch q.Qtype {
 			case dns.TypeA:
 				if h.ipV4Pool.HasEntries() {
@@ -55,14 +58,17 @@ func (h *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 					})
 				}
 			}
-		}
-	} else if h.fallbackDNS != "" {
-		if exMsg, err := dns.Exchange(r, h.fallbackDNS); err == nil {
-			msg.Answer = append(msg.Answer, exMsg.Answer...)
+		} else if h.fallbackDNS != "" {
+			if exMsg, err := dns.Exchange(r, h.fallbackDNS); err == nil {
+				msg.Answer = append(msg.Answer, exMsg.Answer...)
+			}
 		}
 	}
 
-	_ = w.WriteMsg(msg)
+	err := w.WriteMsg(msg)
+	if err != nil {
+		h.logger.Printf(ERROR, "[!] Cannot write msg: %s", err)
+	}
 }
 
 func (h *handler) ipV4(domain string) net.IP {

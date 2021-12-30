@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/hupe1980/fakedns"
@@ -25,6 +26,7 @@ func main() {
 		rebindV6        string
 		rebindThreshold int
 		text            []string
+		verbose         bool
 	}
 
 	rootCmd := &cobra.Command{
@@ -51,6 +53,12 @@ func main() {
 				options.FallbackDNSResolver = opts.upstream
 			}
 
+			lvl := fakedns.ERROR
+			if opts.verbose {
+				lvl = fakedns.INFO
+			}
+			options.Logger = fakedns.NewDefaultLogger(lvl, log.Default())
+
 			fakeDNS, err := fakedns.New(options)
 			if err != nil {
 				return err
@@ -70,6 +78,7 @@ func main() {
 	rootCmd.Flags().StringVarP(&opts.rebindV6, "rebind-v6", "", "", "IPV6 rebind address")
 	rootCmd.Flags().IntVarP(&opts.rebindThreshold, "rebind-threshold", "", 1, "rebind threshold")
 	rootCmd.Flags().StringSliceVarP(&opts.text, "text", "", nil, "TXT text value")
+	rootCmd.Flags().BoolVarP(&opts.verbose, "verbose", "v", false, "print detailed logging messages")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
