@@ -1,11 +1,16 @@
 package fakedns
 
 import (
+	"fmt"
 	"net"
 	"regexp"
 	"strings"
 
 	"github.com/miekg/dns"
+)
+
+const (
+	defaultMXPriority = 10
 )
 
 type handler struct {
@@ -16,6 +21,7 @@ type handler struct {
 	ipV4Pool    RoundRobin
 	ipV6Pool    RoundRobin
 	text        []string
+	mx          string
 	logger      Logger
 }
 
@@ -55,6 +61,18 @@ func (h *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 					msg.Answer = append(msg.Answer, &dns.TXT{
 						Hdr: dns.RR_Header{Name: domain, Rrtype: dns.TypeTXT, Class: dns.ClassINET, Ttl: h.ttl},
 						Txt: h.text,
+					})
+				}
+			case dns.TypeMX:
+				if h.mx != "" {
+					if !strings.HasSuffix(h.mx, ".") {
+						h.mx = fmt.Sprintf("%s.", h.mx)
+					}
+
+					msg.Answer = append(msg.Answer, &dns.MX{
+						Hdr:        dns.RR_Header{Name: domain, Rrtype: dns.TypeMX, Class: dns.ClassINET, Ttl: h.ttl},
+						Mx:         h.mx,
+						Preference: defaultMXPriority,
 					})
 				}
 			}

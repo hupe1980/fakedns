@@ -26,6 +26,7 @@ func main() {
 		rebindV6        string
 		rebindThreshold int
 		text            []string
+		mx              string
 		verbose         bool
 	}
 
@@ -47,6 +48,7 @@ func main() {
 				IPsV6:   opts.ipsV6,
 				Rebind:  fakedns.NewRebind(opts.rebindV4, opts.rebindV6, opts.rebindThreshold),
 				Text:    opts.text,
+				MX:      opts.mx,
 			}
 
 			if opts.upstream != "" {
@@ -78,6 +80,7 @@ func main() {
 	rootCmd.Flags().StringVarP(&opts.rebindV6, "rebind-v6", "", "", "IPV6 rebind address")
 	rootCmd.Flags().IntVarP(&opts.rebindThreshold, "rebind-threshold", "", 1, "rebind threshold")
 	rootCmd.Flags().StringSliceVarP(&opts.text, "text", "", nil, "TXT text value")
+	rootCmd.Flags().StringVarP(&opts.mx, "mx", "", "", "host name of mail exchange server")
 	rootCmd.Flags().BoolVarP(&opts.verbose, "verbose", "v", false, "print detailed logging messages")
 
 	if err := rootCmd.Execute(); err != nil {

@@ -18,6 +18,7 @@ type Options struct {
 	IPsV6               []string
 	Rebind              *Rebind
 	Text                []string
+	MX                  string
 	Logger              Logger
 }
 
@@ -52,6 +53,7 @@ func New(options *Options) (*FakeDNS, error) {
 			ipV4Pool:    NewRoundRobin(options.IPsV4...),
 			ipV6Pool:    NewRoundRobin(options.IPsV6...),
 			text:        options.Text,
+			mx:          options.MX,
 			logger:      options.Logger,
 		},
 	}

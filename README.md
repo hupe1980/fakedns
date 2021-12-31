@@ -53,6 +53,7 @@ Flags:
   -h, --help                   help for fakedns
       --ipv4 strings           IPV4 address to return
       --ipv6 strings           IPV6 address to return
+      --mx string              host name of mail exchange server
   -n, --net string             fakeDNS network protocol (default "udp")
       --rebind-threshold int   rebind threshold (default 1)
       --rebind-v4 string       IPV4 rebind address
