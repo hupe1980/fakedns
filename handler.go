@@ -27,7 +27,7 @@ func (h *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	for _, q := range r.Question {
 		h.logger.Printf(INFO, "[*] Receiving question: %s", q.String())
 
-		domain := r.Question[0].Name
+		domain := q.Name
 		domainlookup := strings.TrimSuffix(domain, ".")
 
 		if h.rebind != nil {
@@ -59,7 +59,10 @@ func (h *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 				}
 			}
 		} else if h.fallbackDNS != "" {
-			if exMsg, err := dns.Exchange(r, h.fallbackDNS); err == nil {
+			upMsg := r.Copy()
+			upMsg.Question = []dns.Question{q}
+
+			if exMsg, err := dns.Exchange(upMsg, h.fallbackDNS); err == nil {
 				msg.Answer = append(msg.Answer, exMsg.Answer...)
 			}
 		}
