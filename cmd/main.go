@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
+	"strings"
 
 	"github.com/hupe1980/fakedns"
 	"github.com/spf13/cobra"
@@ -42,13 +44,12 @@ func main() {
 - Upstream: fakedns example.org --ipv4 127.0.0.1 --upstream 8.8.8.8`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			options := &fakedns.Options{
-				TTL:     opts.ttl,
-				Domains: args,
-				IPsV4:   opts.ipsV4,
-				IPsV6:   opts.ipsV6,
-				Rebind:  fakedns.NewRebind(opts.rebindV4, opts.rebindV6, opts.rebindThreshold),
-				Text:    opts.text,
-				MX:      opts.mx,
+				TTL:    opts.ttl,
+				IPsV4:  opts.ipsV4,
+				IPsV6:  opts.ipsV6,
+				Rebind: fakedns.NewRebind(opts.rebindV4, opts.rebindV6, opts.rebindThreshold),
+				Text:   opts.text,
+				MX:     opts.mx,
 			}
 
 			if opts.upstream != "" {
@@ -61,10 +62,12 @@ func main() {
 			}
 			options.Logger = fakedns.NewDefaultLogger(lvl, log.Default())
 
-			fakeDNS, err := fakedns.New(options)
+			domain, err := regexp.Compile(strings.Join(args, "|"))
 			if err != nil {
 				return err
 			}
+
+			fakeDNS := fakedns.New(domain, options)
 
 			return fakeDNS.ListenAndServe(opts.addr, opts.net)
 		},

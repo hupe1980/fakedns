@@ -5,7 +5,6 @@ import (
 	"log"
 	"net"
 	"regexp"
-	"strings"
 
 	"github.com/miekg/dns"
 )
@@ -13,7 +12,6 @@ import (
 type Options struct {
 	FallbackDNSResolver string
 	TTL                 uint32
-	Domains             []string
 	IPsV4               []string
 	IPsV6               []string
 	Rebind              *Rebind
@@ -28,12 +26,7 @@ type FakeDNS struct {
 	logger  Logger
 }
 
-func New(options *Options) (*FakeDNS, error) {
-	re, err := regexp.Compile(strings.Join(options.Domains, "|"))
-	if err != nil {
-		return nil, err
-	}
-
+func New(domain *regexp.Regexp, options *Options) *FakeDNS {
 	if options.FallbackDNSResolver != "" {
 		if _, _, err := net.SplitHostPort(options.FallbackDNSResolver); err != nil {
 			options.FallbackDNSResolver = net.JoinHostPort(options.FallbackDNSResolver, "53")
@@ -49,7 +42,7 @@ func New(options *Options) (*FakeDNS, error) {
 			rebind:      options.Rebind,
 			ttl:         options.TTL,
 			fallbackDNS: options.FallbackDNSResolver,
-			re:          re,
+			re:          domain,
 			ipV4Pool:    NewRoundRobin(options.IPsV4...),
 			ipV6Pool:    NewRoundRobin(options.IPsV6...),
 			text:        options.Text,
@@ -64,7 +57,7 @@ func New(options *Options) (*FakeDNS, error) {
 		logger:  options.Logger,
 	}
 
-	return fakeDNS, nil
+	return fakeDNS
 }
 
 func (t *FakeDNS) ListenAndServe(addr, network string) error {
