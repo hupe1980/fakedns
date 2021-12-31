@@ -37,8 +37,7 @@ Download the .deb, .rpm or .apk from the [releases page](https://github.com/hupe
 Download the pre-compiled binaries from the [releases page](https://github.com/hupe1980/fakedns/releases) and copy to the desired location.
 
 ## Building from source
-Install a [Go 1.17 compiler](https://golang.org/dl).
-Run the following command in the checked-out repository:
+Install a [Go 1.17 compiler](https://golang.org/dl) and run the following command in the checked-out repository:
 ```
 make build
 ```
@@ -47,8 +46,8 @@ make build
 
 ## Docker Support
 ```bash
-git clone https://github.com/hupe1980/scan4log4shell
-cd scan4log4shell
+git clone https://github.com/hupe1980/fakedns
+cd fakedns
 make docker-build
 
 # Run fakedns for example.org on port 4444
