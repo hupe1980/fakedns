@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/hupe1980/golog"
 	"github.com/miekg/dns"
 )
 
@@ -22,7 +23,7 @@ type handler struct {
 	ipV6Pool    RoundRobin
 	text        []string
 	mx          string
-	logger      Logger
+	logger      golog.Logger
 }
 
 func (h *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
@@ -31,7 +32,7 @@ func (h *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	msg.Authoritative = true
 
 	for _, q := range r.Question {
-		h.logger.Printf(INFO, "[*] Receiving question: %s", q.String())
+		h.logger.Printf(golog.INFO, "[*] Receiving question: %s", q.String())
 
 		domain := q.Name
 		domainlookup := strings.TrimSuffix(domain, ".")
@@ -88,7 +89,7 @@ func (h *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 
 	err := w.WriteMsg(msg)
 	if err != nil {
-		h.logger.Printf(ERROR, "[!] Cannot write msg: %s", err)
+		h.logger.Printf(golog.ERROR, "[!] Cannot write msg: %s", err)
 	}
 }
 

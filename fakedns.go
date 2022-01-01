@@ -6,6 +6,7 @@ import (
 	"net"
 	"regexp"
 
+	"github.com/hupe1980/golog"
 	"github.com/miekg/dns"
 )
 
@@ -17,13 +18,13 @@ type Options struct {
 	Rebind              *Rebind
 	Text                []string
 	MX                  string
-	Logger              Logger
+	Logger              golog.Logger
 }
 
 type FakeDNS struct {
 	options *Options
 	server  *dns.Server
-	logger  Logger
+	logger  golog.Logger
 }
 
 func New(domain *regexp.Regexp, options *Options) *FakeDNS {
@@ -34,7 +35,7 @@ func New(domain *regexp.Regexp, options *Options) *FakeDNS {
 	}
 
 	if options.Logger == nil {
-		options.Logger = NewDefaultLogger(INFO, log.Default())
+		options.Logger = golog.NewGoLogger(golog.INFO, log.Default())
 	}
 
 	server := &dns.Server{
@@ -70,7 +71,7 @@ func (t *FakeDNS) ListenAndServe(addr, network string) error {
 	t.server.Addr = addr
 	t.server.Net = network
 
-	t.logger.Printf(INFO, "[*] Starting server on %s", addr)
+	t.logger.Printf(golog.INFO, "[*] Starting server on %s", addr)
 
 	return t.server.ListenAndServe()
 }
@@ -96,7 +97,7 @@ func (t *FakeDNS) ListenAndServeTLS(addr, certFile, keyFile string) error {
 	t.server.Addr = addr
 	t.server.Net = "tcp-tls"
 
-	t.logger.Printf(INFO, "Starting server on %s", addr)
+	t.logger.Printf(golog.INFO, "Starting server on %s", addr)
 
 	return t.server.ListenAndServe()
 }

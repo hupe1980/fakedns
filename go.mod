@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	github.com/hupe1980/golog v0.0.1
 	github.com/spf13/cobra v1.3.0
 	golang.org/x/mod v0.5.0 // indirect
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d // indirect

@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/hupe1980/fakedns"
+	"github.com/hupe1980/golog"
 	"github.com/spf13/cobra"
 )
 
@@ -56,11 +57,11 @@ func main() {
 				options.FallbackDNSResolver = opts.upstream
 			}
 
-			lvl := fakedns.ERROR
+			lvl := golog.ERROR
 			if opts.verbose {
-				lvl = fakedns.INFO
+				lvl = golog.INFO
 			}
-			options.Logger = fakedns.NewDefaultLogger(lvl, log.Default())
+			options.Logger = golog.NewGoLogger(lvl, log.Default())
 
 			domain, err := regexp.Compile(strings.Join(args, "|"))
 			if err != nil {
