@@ -44,11 +44,16 @@ func main() {
 - Rebind: fakedns example.org --ipv4 127.0.0.1 --rebind-v4 10.10.10.10
 - Upstream: fakedns example.org --ipv4 127.0.0.1 --upstream 8.8.8.8`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			rebind, err := fakedns.NewRebind(opts.rebindV4, opts.rebindV6, opts.rebindThreshold)
+			if err != nil {
+				return err
+			}
+
 			options := &fakedns.Options{
 				TTL:    opts.ttl,
 				IPsV4:  opts.ipsV4,
 				IPsV6:  opts.ipsV6,
-				Rebind: fakedns.NewRebind(opts.rebindV4, opts.rebindV6, opts.rebindThreshold),
+				Rebind: rebind,
 				Text:   opts.text,
 				MX:     opts.mx,
 			}
